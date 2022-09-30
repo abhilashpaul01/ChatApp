@@ -6,21 +6,17 @@ const io = require('socket.io')(8080, {
   });
 io.on('connection', socket =>{
 
-    socket.on('message_sent',(msg)=>{
+    socket.on('message_sent',msg=>{
         socket.broadcast.emit('message',msg);
     })
 
-    // socket.on('new-user-joined',name =>{
-    //     users[socket.id]=name;
-    //     socket.broadcast.emit('user-joined',name);
-    // });
+    socket.on('new-user-joined',name =>{
+        users[socket.id]=name;
+        socket.broadcast.emit('user-joined',name);
+    });
 
-    // socket.on('send',message=>{
-    //     socket.broadcast.emit('receive',{message: message, name: users[socket.id]});
-    // });
-
-    // socket.on('disconnect',message=>{
-    //     socket.broadcast.emit('leave',users[socket.id]);
-    //     delete users[socket.id];
-    // })
+    socket.on('disconnect',message=>{//here message is not needed to use anywhere
+        socket.broadcast.emit('leave',users[socket.id]);
+        delete users[socket.id];
+    })
 })

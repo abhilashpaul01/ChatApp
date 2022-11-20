@@ -1,20 +1,20 @@
 const socket=io('http://localhost:8080');
 
-const users={};//used to take the users in the chat into consideration.Also, users[socket.id] is an important tool
-//used to keep track of the uniquesness of a user in the chat
+// const users={};//used to take the users in the chat into consideration.Also, users[socket.id] is an important tool
+//used to keep track of the uniquesness of a user in the chat used in the server side
 
 const textarea=document.querySelector('#textarea');
 const messageArea=document.querySelector('.message-area');
 
 
 
-let name;//take input from the user
+let uname;//take input from the user
 do{
-    name=prompt("Please enter your name: ");
-}while(!name) 
+    uname=prompt("Please enter your name: ");
+}while(!uname)
 
 
-socket.emit('new-user-joined',name);//trigger request to server when a new user joins
+socket.emit('new-user-joined',uname);//trigger request to server when a new user joins
 
 
 socket.on('user-joined',newusername=>{//return request to all users when a new user joined
@@ -49,7 +49,7 @@ textarea.addEventListener('keyup',(eventname)=>{/* eventname is a response that 
 //a new message has been sent and request has been forwarded to server
 function sendMessage(msg){  /*This msg has only message...it is not an object*/
         let newmsg={ 
-        username: name,  /* it is the name we got from prompt*/
+        username: uname,  /* it is the name we got from prompt*/
         message: msg.trim()  /*trim is done because when passing the message parameter(lets say through socket.emit) 
         the new line after clicking 'enter, is also included in message which we dont want*/
     }
@@ -59,15 +59,17 @@ function sendMessage(msg){  /*This msg has only message...it is not an object*/
     socket.emit('message_sent',newmsg);//request sent to the server for a new message
 }
 
-socket.on('message', newmsg=>{ //getting request from server to display sent message to all users
-    appendMessage(newmsg,'incoming');
+socket.on('message', newmessage=>{ //getting request from server to display sent message to all users
+    appendMessage(newmessage,'incoming');
     scrollToBottom();
 })
 
 
 function appendMessage(newmsg, direction){//function triggers when a message is sent by a user
-    let newele=document.createElement('div');
-    newele.classList.add(direction,'message');
+    let newele=document.createElement('div');//create a new div for displaying the sent or received message
+    newele.classList.add(direction,'message');//we are adding two class 'direction' and "message"
+    //direction can be "incoming" or "outgoing". Everytime a message is received a new div is created where the message 
+    //is seen
 
     let insideEle;
     
@@ -84,13 +86,13 @@ function appendMessage(newmsg, direction){//function triggers when a message is 
         `
     }
 
-    newele.innerHTML=insideEle;
+    newele.innerHTML=insideEle;//here innerHTML helps to access inside the 'newele' i.e. the div
 
     messageArea.append(newele);
 }
 
-socket.on('leave',name=>{ //function triggers when a user has left the chat
-    appendUserLeftChat(name,'incoming');
+socket.on('leave',uname=>{ //function triggers when a user has left the chat
+    appendUserLeftChat(uname,'incoming');
     scrollToBottom();
 }); 
 

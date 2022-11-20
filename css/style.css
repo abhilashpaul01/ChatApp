@@ -29,6 +29,7 @@ section.chat-section{
     background: #d5ccf7;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .logo h1{
@@ -41,7 +42,6 @@ section.chat-section{
 .message-area{
     width: 658px;/**/
     height: 450px;
-    padding: 16px;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
